@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% load avatar_tags %}
+
+{% block title %}Admin Dashboard — WriteSpace{% endblock %}
+
+{% block content %}
+<section class="bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-700 text-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+                <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-2">Admin Dashboard</h1>
+                <p class="text-purple-100 text-lg">Welcome back, {{ user.first_name|default:user.username }}. Here's an overview of your platform.</p>
+            </div>
+            <div>
+                {% render_avatar user %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wide">Total Posts</h3>
+                <span class="text-3xl">📝</span>
+            </div>
+            <p class="text-4xl font-bold text-gray-900">{{ total_posts }}</p>
+            <p class="text-sm text-gray-500 mt-1">Published blog posts</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wide">Total Users</h3>
+                <span class="text-3xl">👥</span>
+            </div>
+            <p class="text-4xl font-bold text-gray-900">{{ total_users }}</p>
+            <p class="text-sm text-gray-500 mt-1">Registered accounts</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wide">Admins</h3>
+                <span class="text-3xl">👑</span>
+            </div>
+            <p class="text-4xl font-bold text-gray-900">{{ total_users|add:"0" }}</p>
+            <p class="text-sm text-gray-500 mt-1">Platform administrators</p>
+        </div>
+    </div>
+
+    <div class="mb-10">
+        <h2 class="text-xl font-bold text-gray-900 mb-4">Quick Actions</h2>
+        <div class="flex flex-col sm:flex-row gap-4">
+            <a href="{% url 'blog_create' %}" class="inline-flex items-center justify-center px-6 py-3 rounded-lg text-base font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                </svg>
+                Write a Post
+            </a>
+            <a href="{% url 'user_management' %}" class="inline-flex items-center justify-center px-6 py-3 rounded-lg text-base font-semibold text-white bg-purple-600 hover:bg-purple-700 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+                </svg>
+                Manage Users
+            </a>
+            <a href="{% url 'blog_list' %}" class="inline-flex items-center justify-center px-6 py-3 rounded-lg text-base font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" />
+                </svg>
+                View All Blogs
+            </a>
+        </div>
+    </div>
+
+    <div>
+        <h2 class="text-xl font-bold text-gray-900 mb-4">Recent Posts</h2>
+        {% if recent_posts %}
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50 border-b border-gray-200">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            {% for post in recent_posts %}
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4">
+                                        <a href="{% url 'blog_detail' post.id %}" class="text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors line-clamp-1">
+                                            {{ post.title }}
+                                        </a>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center">
+                                            {% render_avatar post.author %}
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+                                        {{ post.created_at|date:"M d, Y" }}
+                                    </td>
+                                    <td class="px-6 py-4 text-right whitespace-nowrap">
+                                        <a href="{% url 'blog_edit' post.id %}" class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors mr-2">
+                                            Edit
+                                        </a>
+                                        <a href="{% url 'blog_delete' post.id %}" class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 transition-colors">
+                                            Delete
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% else %}
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
+                <div class="text-5xl mb-4">📝</div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">No posts yet</h3>
+                <p class="text-gray-600 mb-6">Get started by creating the first blog post on the platform.</p>
+                <a href="{% url 'blog_create' %}" class="inline-flex items-center px-6 py-3 rounded-lg text-base font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors">
+                    Write the First Post
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

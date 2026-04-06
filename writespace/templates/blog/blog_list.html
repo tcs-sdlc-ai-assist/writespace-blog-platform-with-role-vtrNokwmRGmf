@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load avatar_tags %}
+
+{% block title %}All Blogs — WriteSpace{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">All Blog Posts</h1>
+            <p class="text-gray-600">Discover stories from our community of writers.</p>
+        </div>
+        <a href="{% url 'blog_create' %}" class="mt-4 sm:mt-0 inline-flex items-center px-5 py-2.5 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors">
+            ✍️ Write a Post
+        </a>
+    </div>
+
+    {% if posts %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for post in posts %}
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col hover:shadow-md transition-shadow {% if post.author == user %}border-l-4 border-l-blue-500{% elif post.author.is_staff %}border-l-4 border-l-purple-500{% endif %}">
+                    <div class="p-6 flex flex-col flex-1">
+                        <div class="flex items-start justify-between mb-3">
+                            <a href="{% url 'blog_detail' post.id %}" class="text-xl font-semibold text-gray-900 hover:text-blue-600 transition-colors line-clamp-2 flex-1">
+                                {{ post.title }}
+                            </a>
+                            {% if post.author == user or user.is_staff %}
+                                <a href="{% url 'blog_edit' post.id %}" class="ml-2 text-gray-400 hover:text-blue-600 transition-colors flex-shrink-0" title="Edit post">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                                    </svg>
+                                </a>
+                            {% endif %}
+                        </div>
+                        <p class="text-gray-600 mb-4 flex-1 line-clamp-3">{{ post.excerpt }}{% if post.content|length > 120 %}…{% endif %}</p>
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-200 mt-auto">
+                            <div class="flex items-center">
+                                {% render_avatar post.author %}
+                            </div>
+                            <span class="text-sm text-gray-400">{{ post.created_at|date:"M d, Y" }}</span>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-16">
+            <div class="text-5xl mb-4">📝</div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">No posts yet</h3>
+            <p class="text-gray-600 mb-6">Be the first to share your story on WriteSpace!</p>
+            <a href="{% url 'blog_create' %}" class="inline-flex items-center px-6 py-3 rounded-lg text-base font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors">
+                Write the First Post
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

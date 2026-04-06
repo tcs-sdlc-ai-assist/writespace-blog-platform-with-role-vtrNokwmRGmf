@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}{% if editing %}Edit Post{% else %}Write a Post{% endif %} — WriteSpace{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="mb-6">
+        <a href="{% if editing %}{% url 'blog_detail' post.id %}{% else %}{% url 'blog_list' %}{% endif %}" class="inline-flex items-center text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+            </svg>
+            {% if editing %}Back to Post{% else %}Back to Blogs{% endif %}
+        </a>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 sm:p-10">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">{% if editing %}Edit Post{% else %}Write a New Post{% endif %}</h1>
+            <p class="text-gray-600">{% if editing %}Update your post below.{% else %}Share your thoughts with the WriteSpace community.{% endif %}</p>
+        </div>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="mb-6 px-4 py-3 rounded-lg text-sm font-medium bg-red-100 text-red-800 border border-red-200">
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="mb-5">
+                <label for="id_title" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                {{ form.title }}
+                {% if form.title.errors %}
+                    <div class="mt-1 text-sm text-red-600">
+                        {% for error in form.title.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="mb-6">
+                <label for="id_content" class="block text-sm font-medium text-gray-700 mb-1">Content</label>
+                {{ form.content }}
+                {% if form.content.errors %}
+                    <div class="mt-1 text-sm text-red-600">
+                        {% for error in form.content.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="flex items-center justify-end gap-3">
+                <a href="{% if editing %}{% url 'blog_detail' post.id %}{% else %}{% url 'blog_list' %}{% endif %}" class="inline-flex items-center px-5 py-2.5 rounded-lg text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 transition-colors">
+                    Cancel
+                </a>
+                <button type="submit" class="inline-flex items-center px-5 py-2.5 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    {% if editing %}Update Post{% else %}Publish Post{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
